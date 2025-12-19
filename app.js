@@ -9,13 +9,14 @@ const {
   deletePet,
   updatePetDetails,
   addPet,
-} = require("./models/controllers/pets");
+} = require("./controllers/pets");
 const {
   adoptPet,
   approveAdoption,
   getAllAdoptions,
-} = require("./models/controllers/adoption");
-const { registerUser, login } = require("./models/controllers/user");
+} = require("./controllers/adoption");
+const { registerUser, login } = require("./controllers/user");
+const verifyToken = require("./middlewares/verifyToken");
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -25,15 +26,18 @@ const PORT = process.env.PORT;
 app.get("/health", (req, res) => {
   res.json({ status: 200, message: "Success" });
 });
+
 app.get("/allpets", getPets);
+app.post("/register", registerUser);
+app.post("/login", login);
+
+app.use(verifyToken);
 app.get("/pet/:id", findPetById);
 app.post("/addpet", addPet);
 app.patch("/removepet/:pet_id", deletePet);
 app.patch("/updatepet/:pet_id", updatePetDetails);
 app.post("/adoptpet", adoptPet);
 app.put("/approveAdopt", approveAdoption);
-app.post("/register", registerUser);
-app.post("/login", login);
 app.post("/getApplications", getAllAdoptions);
 pool.getConnection((err, con) => {
   if (err) {

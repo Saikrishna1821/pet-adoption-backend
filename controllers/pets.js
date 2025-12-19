@@ -1,4 +1,4 @@
-const pool = require("../dbConnection");
+const pool = require("../models/dbConnection");
 const { adoptPet } = require("./adoption");
 const getPets = async (req, res) => {
   try {
@@ -39,7 +39,6 @@ const findPetById = async (req, res) => {
 };
 
 const deletePet = async (req, res) => {
-  console.log("INSODE DELTE");
   try {
     const { pet_id } = req.params;
     const query = `
@@ -49,7 +48,6 @@ const deletePet = async (req, res) => {
     `;
 
     const result = await pool.query(query, [pet_id]);
-    console.log(result);
     res.status(200).json({
       success: true,
       message: "Deleted Pet",
@@ -75,9 +73,7 @@ const updatePetDetails = async (req, res) => {
         age  = COALESCE(?, age)
       WHERE pet_id = ?
     `;
-    console.log("details", pet_id, age, name);
     const [result] = await pool.query(query, [name, age, pet_id]);
-    console.log("query", result);
     if (result.affectedRows === 0) {
       return res.status(404).json({ success: false, message: "Pet not found" });
     }

@@ -1,11 +1,10 @@
-const pool = require("../dbConnection");
+const pool = require("../models/dbConnection");
 
 const adoptPet = async (req, res) => {
   try {
     const { pet_id, user_id } = req.body;
     const query = `INSERT INTO adoptions (pet_id,user_id,status) values (?,?,'APPLIED')`;
     const [result] = await pool.query(query, [pet_id, user_id]);
-    console.log("result", result);
     res.status(201).json({
       success: true,
       message: "Applied for adoption",
@@ -38,7 +37,6 @@ const getAllAdoptions = async (req, res) => {
     let query = `SELECT adoption_id ,p.name as petname, species,gender,breed,u.name as requestedBy,email , status  FROM adoptions a INNER JOIN users u on u.user_id=a.user_id INNER JOIN pets p ON p.pet_id=a.pet_id 
   where p.is_active=1`;
     if (role !== "ADMIN") query += ` AND a.user_id=?`;
-    console.log("query", query);
     const [rows] = await pool.query(query, [user_id]);
 
     res.status(200).json({

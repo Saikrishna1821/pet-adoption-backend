@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const pool = require("../dbConnection");
+const pool = require("../models/dbConnection");
 const jwt = require("jsonwebtoken");
 const registerUser = async (req, res) => {
   try {
@@ -21,10 +21,8 @@ const registerUser = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(email, password);
     const query = "Select * from users where email=?";
     const [result] = await pool.query(query, [email]);
-    console.log("Result", result);
     const isMatch = await bcrypt.compare(password, result[0]?.password_hash);
     if (!isMatch) {
       res.status(401).json({
@@ -39,18 +37,16 @@ const login = async (req, res) => {
       role: result[0].role,
     };
     const token = await jwt.sign(user, process.env.JWT_SECRET);
-    console.log(token);
 
     res.status(200).json({
       success: true,
       message: "LoggedIn Successfully",
-      token:token
+      token: token,
     });
   } catch (e) {
     console.log(e);
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
 
 module.exports = { registerUser, login };
