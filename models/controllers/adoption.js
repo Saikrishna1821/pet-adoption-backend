@@ -19,10 +19,9 @@ const adoptPet = async (req, res) => {
 
 const approveAdoption = async (req, res) => {
   try {
-    const { application_id ,status } = req.body;
-    const query =
-      "UPDATE adoptions SET status=?  where adoption_id=? ";
-    const [result] = await pool.query(query, [status,application_id]);
+    const { application_id, status } = req.body;
+    const query = "UPDATE adoptions SET status=?  where adoption_id=? ";
+    const [result] = await pool.query(query, [status, application_id]);
 
     res.status(200).json({
       success: true,

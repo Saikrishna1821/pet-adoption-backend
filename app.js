@@ -1,5 +1,5 @@
-const express = require("express");
 require("dotenv").config();
+const express = require("express");
 const { pool } = require("./models/dbConnection");
 const cors = require("cors");
 
@@ -19,12 +19,8 @@ const { registerUser, login } = require("./models/controllers/user");
 const app = express();
 app.use(cors());
 app.use(express.json());
-console.log("DB_HOST:", process.env.DB_HOST);
-console.log("DB_USER:", process.env.DB_USER);
-console.log("DB_NAME:", process.env.DB_NAME);
 
-
-const PORT = 4000 || 8000;
+const PORT = process.env.PORT;
 
 app.get("/health", (req, res) => {
   res.json({ status: 200, message: "Success" });
